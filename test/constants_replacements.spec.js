@@ -1,14 +1,14 @@
 'use strict';
 
-const chai = require('chai');
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const expect = chai.expect;
+let chai = require('chai');
+let sinon = require('sinon');
+let sinonChai = require('sinon-chai');
+let expect = chai.expect;
 
 chai.use(sinonChai);
 
 describe("Constants replacement in ini files", function () {
-    var MultiIni = require('../src');
+    var MultiIni = require('../dist');
 
     it("Default replacement if constant found", function () {
         var ini = new MultiIni.Class({
@@ -20,7 +20,7 @@ describe("Constants replacement in ini files", function () {
 
         expect(data).not.to.be.null;
 
-        expect(data['section']).to.be.defined;
+        expect(data['section']).not.to.be.undefined;
 
         expect(data['section']['key1']).to.equal('"Part1 replacement"');
 

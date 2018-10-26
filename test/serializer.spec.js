@@ -1,14 +1,14 @@
 'use strict';
 
-const chai = require('chai');
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const expect = chai.expect;
+let chai = require('chai');
+let sinon = require('sinon');
+let sinonChai = require('sinon-chai');
+let expect = chai.expect;
 
 chai.use(sinonChai);
 
 describe('Testing serializer', function () {
-    var Serializer = require('../src/serializer');
+    var Serializer = require('../dist/serializer').default;
 
     it('Availability of the class', function () {
         expect(Serializer).not.to.be.undefined;

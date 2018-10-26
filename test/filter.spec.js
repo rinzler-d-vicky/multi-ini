@@ -1,14 +1,14 @@
 'use strict';
 
-const chai = require('chai');
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const expect = chai.expect;
+let chai = require('chai');
+let sinon = require('sinon');
+let sinonChai = require('sinon-chai');
+let expect = chai.expect;
 
 chai.use(sinonChai);
 
 describe("Filters", function () {
-    var MultiIni = require('../src');
+    var MultiIni = require('../dist');
 
     it("Availability of the filters", function () {
         expect(MultiIni.filters).not.to.be.undefined;
@@ -17,7 +17,7 @@ describe("Filters", function () {
 
     describe("lowercase", function () {
         it("is available", function () {
-            expect(MultiIni.filters.lowercase).to.be.defined;
+            expect(MultiIni.filters.lowercase).not.to.be.undefined;
         });
 
         it("string should be lowercase", function () {
@@ -31,7 +31,7 @@ describe("Filters", function () {
 
     describe("uppercase", function () {
         it("is available", function () {
-            expect(MultiIni.filters.uppercase).to.be.defined;
+            expect(MultiIni.filters.uppercase).not.to.be.undefined;
         });
 
         it("string should be uppercase", function () {
@@ -45,7 +45,7 @@ describe("Filters", function () {
 
     describe("trim", function () {
         it("is available", function () {
-            expect(MultiIni.filters.trim).to.be.defined;
+            expect(MultiIni.filters.trim).not.to.be.undefined;
         });
 
         it("string should be trimmed", function () {
@@ -59,7 +59,7 @@ describe("Filters", function () {
 
     describe("constants", function () {
         it("is available", function () {
-            expect(MultiIni.filters.constants).to.be.defined;
+            expect(MultiIni.filters.constants).not.to.be.undefined;
         });
 
         it("string should have replaced constants", function () {
@@ -77,7 +77,7 @@ describe("Filters", function () {
 
     describe("boolean", function () {
         it("is available", function () {
-            expect(MultiIni.filters.boolean).to.be.defined;
+            expect(MultiIni.filters.boolean).not.to.be.undefined;
         });
 
         it("string should have replaced booleans", function () {

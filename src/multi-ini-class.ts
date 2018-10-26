@@ -1,18 +1,26 @@
 'use strict';
 
-const fs = require('fs');
-const _  = require('lodash');
+import fs = require('fs');
 
-const Parser = require('./parser');
-const Serializer = require('./serializer');
-const Constants = require('./constants');
+import Parser from "./parser";
+import Serializer from "./serializer";
+import Constants from "./constants";
 
 const defaults = {
     encoding: 'utf8',
-    line_breaks: 'unix',
+    line_breaks: 'unix' as "unix",
 };
 
-class MultiIni {
+export type X = {
+	encoding: string,
+	line_breaks: 'unix'|'windows',
+}
+
+export default class MultiIni {
+	options: X
+	parser: Parser
+	serializer: Serializer
+
     constructor(options = {}) {
         this.options = Object.assign({}, defaults, options);
 
@@ -20,7 +28,7 @@ class MultiIni {
         this.serializer = new Serializer(this.options);
     }
 
-    read(filename) {
+    read(filename: string) {
         if (!filename) {
             throw new Error('Missing filename.');
         }
@@ -30,17 +38,15 @@ class MultiIni {
         return this.parser.parse(lines);
     }
 
-    fetchLines(filename) {
+    fetchLines(filename: string) {
         const content = fs.readFileSync(filename, this.options);
-
-        return content.split(Constants.line_breaks[this.options.line_breaks]);
+		
+        return content.split(Constants.line_breaks[this.options.line_breaks as "unix"|"windows"]);
     }
 
-    write(filename, content = {}) {
+    write(filename: string, content = {}) {
         fs.writeFileSync(filename, this.serializer.serialize(content), this.options);
 
         return ;
     }
 }
-
-module.exports = MultiIni;

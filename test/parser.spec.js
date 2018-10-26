@@ -1,14 +1,14 @@
 'use strict';
 
-const chai = require('chai');
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const expect = chai.expect;
+let chai = require('chai');
+let sinon = require('sinon');
+let sinonChai = require('sinon-chai');
+let expect = chai.expect;
 
 chai.use(sinonChai);
 
 describe("Testing parser", function () {
-    var Parser = require('../src/parser');
+	var Parser = require("../dist/parser").default; 
 
     it("Availability of the class", function () {
         expect(Parser).not.to.be.undefined;
@@ -66,18 +66,19 @@ describe("Testing parser", function () {
             instance.handleSection(ctx, "[another]");
             instance.handleSection(ctx, "[multi]");
 
-            expect(ctx.ini.multi).to.be.defined;
-            expect(ctx.ini.another).to.be.defined;
+            expect(ctx.ini.multi).not.to.be.undefined;
+            expect(ctx.ini.another).not.to.be.undefined;
             expect(ctx.current).to.equal(ctx.ini.multi);
         });
     });
 
-    describe("handleSingleLine", function () {
-        var instance = new Parser({keep_quotes: true});
+	// why is it here again?
+    // describe("handleSingleLine", function () {
+    //     var instance = new Parser({keep_quotes: true});
 
-        it("", function () {
+        // it("", function () {
 
-        });
-    });
+        // });
+    // });
 
 });

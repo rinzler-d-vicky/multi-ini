@@ -14,13 +14,24 @@ const STATUS_INVALID = 1;
 const defaults = {
     ignore_invalid: true,
     keep_quotes: false,
-    oninvalid: () => true,
+    oninvalid: (line: string) => true,
     filters: [],
     constants: {},
 };
 
-class Parser {
-    constructor(options = {}) {
+export type X = {
+	ignore_invalid: boolean,
+	keep_quotes: boolean,
+	oninvalid: (line: string) => boolean,
+	filters: any[],
+	constants: object,
+}
+
+export default class Parser {
+	options: X
+	handlers: any[]
+
+	constructor(options = {}) {
         this.options = Object.assign({}, defaults, options);
 
         this.handlers = [
@@ -33,7 +44,7 @@ class Parser {
         ];
     }
 
-    parse(lines) {
+    parse(lines: string[]) {
         const ctx = {
             ini: {},
             current: {},
@@ -54,19 +65,19 @@ class Parser {
         return ctx.ini;
     }
 
-    isSection(line) {
+    isSection(line: string) {
         return line.match(REGEXP_SECTION);
     }
 
-    getSection(line) {
-        return line.match(REGEXP_SECTION)[1]
+    getSection(line: string) {
+        return (<string[]>line.match(REGEXP_SECTION))[1]
     }
 
-    isComment(line) {
+    isComment(line: string) {
         return line.match(REGEXP_COMMENT);
     }
 
-    isSingleLine(line) {
+    isSingleLine(line: string) {
         const result = line.match(REGEXP_SINGLE_LINE);
 
         if (!result) {
@@ -78,7 +89,7 @@ class Parser {
         return !check || (check.length % 2 === 0);
     }
 
-    isMultiLine(line) {
+    isMultiLine(line: string) {
         const result = line.match(REGEXP_MULTI_LINE);
 
         if (!result) {
@@ -90,15 +101,15 @@ class Parser {
         return !check || (check.length % 2 === 0);
     }
 
-    isMultiLineEnd(line) {
+    isMultiLineEnd(line: string) {
         return line.match(REGEXP_MULTI_LINE_END) && !line.match(REGEXP_NOT_ESCAPED_MULTI_LINE_END);
     }
 
-    isArray(line) {
+    isArray(line: string) {
         return line.match(REGEXP_ARRAY);
     }
 
-    assignValue(element, keys, value) {
+    assignValue(element: any, keys: string|string[], value: any) {
         value = this.applyFilter(value);
 
         let current = element;
@@ -124,21 +135,22 @@ class Parser {
             current.push(value);
         }
         else {
-            previous[key] = value;
+            previous[key as string] = value;
         }
 
         return element;
     }
 
-    applyFilter(value) {
+    applyFilter(value: any) {
         for (let filter of this.options.filters) {
+			// @ts-ignore
             value = filter(value, this.options);
         }
 
         return value;
     }
 
-    getKeyValue(line) {
+    getKeyValue(line: string) {
         const result = line.match(REGEXP_SINGLE_LINE);
 
         if (!result) {
@@ -154,7 +166,7 @@ class Parser {
         return {key, value, status: STATUS_OK};
     }
 
-    getMultiKeyValue(line) {
+    getMultiKeyValue(line: string) {
         const result = line.match(REGEXP_MULTI_LINE);
 
         if (!result) {
@@ -170,7 +182,7 @@ class Parser {
         return {key, value};
     }
 
-    getMultiLineEndValue(line) {
+    getMultiLineEndValue(line: string) {
         const result = line.match(REGEXP_MULTI_LINE_END);
 
         if (!result) {
@@ -186,13 +198,13 @@ class Parser {
         return {value, status: STATUS_OK};
     }
 
-    getArrayKey(line) {
+    getArrayKey(line: string) {
         const result = line.match(REGEXP_ARRAY);
 
-        return result[1];
+		return (<RegExpMatchArray>result)[1];
     }
 
-    handleMultiLineStart(ctx, line) {
+    handleMultiLineStart(ctx: any, line: string) {
         if (!this.isMultiLine(line.trim())) {
             return false;
         }
@@ -206,7 +218,7 @@ class Parser {
         return true;
     }
 
-    handleMultiLineEnd(ctx, line) {
+    handleMultiLineEnd(ctx: any, line: string) {
         if (!ctx.multiLineKeys || !this.isMultiLineEnd(line.trim())) {
             return false;
         }
@@ -236,7 +248,7 @@ class Parser {
         return true;
     }
 
-    handleMultiLineAppend(ctx, line) {
+    handleMultiLineAppend(ctx: any, line: string) {
         if (!ctx.multiLineKeys || this.isMultiLineEnd(line.trim())) {
             return false;
         }
@@ -246,11 +258,11 @@ class Parser {
         return true;
     }
 
-    handleComment(ctx, line) {
+    handleComment(ctx: any, line: string) {
         return this.isComment(line.trim());
     }
 
-    handleSection(ctx, line) {
+    handleSection(ctx: any, line: string) {
         line = line.trim();
 
         if (!this.isSection(line)) {
@@ -268,7 +280,7 @@ class Parser {
         return true;
     }
 
-    handleSingleLine(ctx, line) {
+    handleSingleLine(ctx: any, line: string) {
         line = line.trim();
 
         if (!this.isSingleLine(line)) {
@@ -294,5 +306,3 @@ class Parser {
         return true;
     }
 }
-
-module.exports = Parser;

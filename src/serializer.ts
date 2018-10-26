@@ -1,25 +1,31 @@
 'use strict';
 
 const _ = require('lodash');
-const Constants = require('./constants');
+import Constants from "./constants";
 
 const defaults = {
-    line_breaks: 'unix',
+	line_breaks: 'unix' as "unix",
     keep_quotes: false,
 };
 
+export type X = {
+	line_breaks: "unix"|"windows",
+	keep_quotes: boolean
+}
 
-class Serializer {
+export default class Serializer {
+	options: X
+
     constructor(options = {}) {
         this.options = Object.assign({}, defaults, options);
     }
 
-    needToBeQuoted(value) {
+    needToBeQuoted(value: string) {
         if (this.options.keep_quotes) {
             return false;
         }
 
-        // wrapped with qoutes
+        // wrapped with quotes
         if (value.match(/^"[\s\S]*?"$/g)) {
             return false;
         }
@@ -37,18 +43,18 @@ class Serializer {
         return true;
     }
 
-    serialize(content) {
-        return _.reduce(content, (output, sectionContent, section) => {
+    serialize(content: object) {
+        return _.reduce(content, (output: string, sectionContent: object, section: string) => {
             output += `[${section}]` + Constants.line_breaks[this.options.line_breaks];
             output += this.serializeContent(sectionContent, '');
             return output;
         }, '');
     }
 
-    serializeContent(content, path) {
-        return _.reduce(content, (serialized, subContent, key) => {
+	serializeContent(content: string|object|any[], path: string) {
+        return _.reduce(content, (serialized: string, subContent: typeof content, key: string) => {
             if (_.isArray(subContent)) {
-                for (let value of subContent) {
+                for (let value of <any[]>subContent) {
                     if (this.needToBeQuoted(value)) {
                         value = `"${value}"`;
                     }
@@ -60,7 +66,7 @@ class Serializer {
                 serialized += this.serializeContent(subContent, path + (path.length > 0 ? '.' : '') + key);
             }
             else {
-                if (this.needToBeQuoted(subContent)) {
+                if (this.needToBeQuoted(subContent as string)) {
                     subContent = `"${subContent}"`;
                 }
 
@@ -71,5 +77,3 @@ class Serializer {
         }, '');
     }
 }
-
-module.exports = Serializer;
