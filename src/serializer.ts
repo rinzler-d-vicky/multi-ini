@@ -23,7 +23,8 @@ export default class Serializer {
     needToBeQuoted(value: string) {
         if (this.options.keep_quotes) {
             return false;
-        }
+		}
+		if(typeof value !== "string") value = (<any>value).toString()
 
         // wrapped with quotes
         if (value.match(/^"[\s\S]*?"$/g)) {
@@ -66,7 +67,7 @@ export default class Serializer {
                 serialized += this.serializeContent(subContent, path + (path.length > 0 ? '.' : '') + key);
             }
             else {
-                if (this.needToBeQuoted(subContent as string)) {
+                if (this.needToBeQuoted(subContent.toString())) {
                     subContent = `"${subContent}"`;
                 }
 
