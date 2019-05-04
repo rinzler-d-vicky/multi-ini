@@ -71,19 +71,19 @@ not_quotes=not_quoted
 #### filters
 
 ```js
-MultiIni = require('@rubix-code/ini');
-ini = new MultiIni.Class({
-    filters: [MultiIni.filters.lowercase]
+Ini = require('@rubix-code/ini');
+ini = new Ini.Class({
+    filters: [Ini.filters.lowercase]
 });
 content = ini.read(file);
 ```
 
 *Replacing constants*
 ```js
-MultiIni = require('@rubix-code/ini');
-ini = new MultiIni.Class({
+Ini = require('@rubix-code/ini');
+ini = new Ini.Class({
   constants: {'CONSTANT': 'replacement'},
-  filters: [MultiIni.filters.constants]
+  filters: [Ini.filters.constants]
 });
 content = ini.read(file);
 ```
@@ -91,8 +91,8 @@ content = ini.read(file);
 
 *Define a custom filter*
 ```js
-MultiIni = require('@rubix-code/ini');
-ini = new MultiIni.Class({
+Ini = require('@rubix-code/ini');
+ini = new Ini.Class({
     filters: [
         function (value) {
             return "Prepend " + value;

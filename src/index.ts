@@ -17,7 +17,7 @@ export function read(filename: string, options = {}) {
     return instance.read(filename);
 }
 
-export function write(filename: string, content: string, options = {}) {
+export function write(filename: string, content: object = {}, options = {}) {
     const instance = new MultiIni(options);
     return instance.write(filename, content);
 }
